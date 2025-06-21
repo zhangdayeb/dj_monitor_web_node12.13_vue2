@@ -1,545 +1,495 @@
 /**
- * 骰宝投注项目映射关系
- * 定义投注ID与数据库字段、显示名称、赔率等的映射关系
+ * 骰宝52个投注项映射配置
+ * 基于数据库表 ntp_dianji_game_peilv (game_type_id = 9)
  */
 
-// 基础投注区域映射 (304-307)
-export const BASIC_MAPPING = {
-  small: {
-    id: 304,
-    prop: 'sum_bet_amt_304',
-    label: '小',
-    name: '小',
-    fullName: '小(4-10)',
-    description: '三颗骰子点数总和4-10',
-    odds: '1:1',
-    payout: 1,
-    probability: 48.61,
-    houseEdge: 2.78,
+// 投注类型映射
+export const SICBO_BET_MAPPING = {
+  // 基础区域 (304-307)
+  304: {
+    name: '小(4-10)',
+    shortName: '小',
     category: 'basic',
-    group: '基础区域',
     color: '#67c23a',
     bgColor: '#f0f9ff',
-    icon: 'el-icon-bottom',
-    order: 1,
-    range: { min: 4, max: 10 },
-    excludeTriples: true
+    order: 1
   },
-  
-  big: {
-    id: 305,
-    prop: 'sum_bet_amt_305',
-    label: '大',
-    name: '大',
-    fullName: '大(11-17)',
-    description: '三颗骰子点数总和11-17',
-    odds: '1:1',
-    payout: 1,
-    probability: 48.61,
-    houseEdge: 2.78,
+  305: {
+    name: '大(11-17)',
+    shortName: '大',
     category: 'basic',
-    group: '基础区域',
     color: '#409eff',
     bgColor: '#ecf5ff',
-    icon: 'el-icon-top',
-    order: 2,
-    range: { min: 11, max: 17 },
-    excludeTriples: true
+    order: 2
   },
-  
-  odd: {
-    id: 306,
-    prop: 'sum_bet_amt_306',
-    label: '单',
+  306: {
     name: '单',
-    fullName: '单数',
-    description: '三颗骰子点数总和为单数',
-    odds: '1:1',
-    payout: 1,
-    probability: 48.61,
-    houseEdge: 2.78,
+    shortName: '单',
     category: 'basic',
-    group: '基础区域',
     color: '#e6a23c',
     bgColor: '#fdf6ec',
-    icon: 'el-icon-minus',
-    order: 3,
-    excludeTriples: true
+    order: 3
   },
-  
-  even: {
-    id: 307,
-    prop: 'sum_bet_amt_307',
-    label: '双',
+  307: {
     name: '双',
-    fullName: '双数',
-    description: '三颗骰子点数总和为双数',
-    odds: '1:1',
-    payout: 1,
-    probability: 48.61,
-    houseEdge: 2.78,
+    shortName: '双',
     category: 'basic',
-    group: '基础区域',
     color: '#f56c6c',
     bgColor: '#fef0f0',
-    icon: 'el-icon-plus',
-    order: 4,
-    excludeTriples: true
-  }
-}
+    order: 4
+  },
 
-// 总和投注区域映射 (308-321) 对应总和4-17
-export const TOTAL_MAPPING = (() => {
-  const mapping = {}
-  
-  // 总和4-17的详细配置
-  const totalConfigs = {
-    4: { 
-      odds: '60:1', payout: 60, probability: 1.39, combinations: 3,
-      diceCombo: [[1,1,2], [1,2,1], [2,1,1]], icon: 'el-icon-star-on'
-    },
-    5: { 
-      odds: '30:1', payout: 30, probability: 2.78, combinations: 6,
-      diceCombo: [[1,1,3], [1,2,2], [1,3,1], [2,1,2], [2,2,1], [3,1,1]], icon: 'el-icon-star-on'
-    },
-    6: { 
-      odds: '17:1', payout: 17, probability: 4.63, combinations: 10,
-      icon: 'el-icon-star-off'
-    },
-    7: { 
-      odds: '12:1', payout: 12, probability: 6.94, combinations: 15,
-      icon: 'el-icon-star-off'
-    },
-    8: { 
-      odds: '8:1', payout: 8, probability: 9.72, combinations: 21,
-      icon: 'el-icon-circle-check'
-    },
-    9: { 
-      odds: '6:1', payout: 6, probability: 11.57, combinations: 25,
-      icon: 'el-icon-circle-check'
-    },
-    10: { 
-      odds: '6:1', payout: 6, probability: 12.50, combinations: 27,
-      icon: 'el-icon-circle-check'
-    },
-    11: { 
-      odds: '6:1', payout: 6, probability: 12.50, combinations: 27,
-      icon: 'el-icon-circle-check'
-    },
-    12: { 
-      odds: '6:1', payout: 6, probability: 12.50, combinations: 25,
-      icon: 'el-icon-circle-check'
-    },
-    13: { 
-      odds: '6:1', payout: 6, probability: 11.57, combinations: 21,
-      icon: 'el-icon-circle-check'
-    },
-    14: { 
-      odds: '8:1', payout: 8, probability: 9.72, combinations: 15,
-      icon: 'el-icon-star-off'
-    },
-    15: { 
-      odds: '12:1', payout: 12, probability: 6.94, combinations: 10,
-      icon: 'el-icon-star-off'
-    },
-    16: { 
-      odds: '17:1', payout: 17, probability: 4.63, combinations: 6,
-      icon: 'el-icon-star-off'
-    },
-    17: { 
-      odds: '30:1', payout: 30, probability: 2.78, combinations: 3,
-      diceCombo: [[5,6,6], [6,5,6], [6,6,5]], icon: 'el-icon-star-on'
-    }
-  }
-  
-  for (let sum = 4; sum <= 17; sum++) {
-    const betId = 308 + (sum - 4)
-    const config = totalConfigs[sum]
-    
-    // 计算庄家优势
-    const houseEdge = ((216 - config.combinations * (config.payout + 1)) / 216 * 100).toFixed(2)
-    
-    // 确定风险等级
-    let riskLevel = 'low'
-    if (config.payout >= 50) riskLevel = 'extreme'
-    else if (config.payout >= 15) riskLevel = 'high'
-    else if (config.payout >= 8) riskLevel = 'medium'
-    
-    // 确定颜色
-    let color = '#67c23a' // 低风险绿色
-    if (riskLevel === 'extreme') color = '#f56c6c'
-    else if (riskLevel === 'high') color = '#e6a23c'
-    else if (riskLevel === 'medium') color = '#409eff'
-    
-    mapping[`total_${sum}`] = {
-      id: betId,
-      prop: `sum_bet_amt_${betId}`,
-      label: `和${sum}`,
-      name: `总和${sum}`,
-      fullName: `点数总和${sum}`,
-      description: `三颗骰子点数总和为${sum}`,
-      totalSum: sum,
-      odds: config.odds,
-      payout: config.payout,
-      probability: config.probability,
-      combinations: config.combinations,
-      houseEdge: parseFloat(houseEdge),
-      category: 'total',
-      group: '总和区域',
-      riskLevel,
-      color,
-      bgColor: riskLevel === 'extreme' ? '#fef0f0' : '#f0f9ff',
-      icon: config.icon,
-      order: sum,
-      diceCombo: config.diceCombo || [],
-      isHighOdds: config.payout >= 10,
-      isExtremeOdds: config.payout >= 30
-    }
-  }
-  
-  return mapping
-})()
+  // 总和区域 (308-321)
+  308: {
+    name: '总和4',
+    shortName: '和4',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 1
+  },
+  309: {
+    name: '总和5',
+    shortName: '和5',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 2
+  },
+  310: {
+    name: '总和6',
+    shortName: '和6',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 3
+  },
+  311: {
+    name: '总和7',
+    shortName: '和7',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 4
+  },
+  312: {
+    name: '总和8',
+    shortName: '和8',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 5
+  },
+  313: {
+    name: '总和9',
+    shortName: '和9',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 6
+  },
+  314: {
+    name: '总和10',
+    shortName: '和10',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 7
+  },
+  315: {
+    name: '总和11',
+    shortName: '和11',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 8
+  },
+  316: {
+    name: '总和12',
+    shortName: '和12',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 9
+  },
+  317: {
+    name: '总和13',
+    shortName: '和13',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 10
+  },
+  318: {
+    name: '总和14',
+    shortName: '和14',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 11
+  },
+  319: {
+    name: '总和15',
+    shortName: '和15',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 12
+  },
+  320: {
+    name: '总和16',
+    shortName: '和16',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 13
+  },
+  321: {
+    name: '总和17',
+    shortName: '和17',
+    category: 'total',
+    color: '#909399',
+    bgColor: '#f4f4f5',
+    order: 14
+  },
 
-// 单骰投注区域映射 (322-327) 对应单骰1-6
-export const SINGLE_MAPPING = (() => {
-  const mapping = {}
-  
-  for (let num = 1; num <= 6; num++) {
-    const betId = 322 + (num - 1)
-    
-    mapping[`single_${num}`] = {
-      id: betId,
-      prop: `sum_bet_amt_${betId}`,
-      label: `单${num}`,
-      name: `单骰${num}`,
-      fullName: `单骰点数${num}`,
-      description: `至少有一颗骰子显示${num}`,
-      diceNumber: num,
-      odds: '1:1',
-      payout: 1,
-      probability: 42.13,
-      houseEdge: 7.87,
-      category: 'single',
-      group: '单骰区域',
-      color: '#409eff',
-      bgColor: '#ecf5ff',
-      icon: 'el-icon-circle-check',
-      order: num,
-      combinations: 91, // 216个组合中的91个
-      winConditions: [
-        `出现一个${num}`,
-        `出现两个${num}`,
-        `出现三个${num}`
-      ]
-    }
-  }
-  
-  return mapping
-})()
-
-// 对子投注区域映射 (328-333) 对应对子1-6
-export const PAIR_MAPPING = (() => {
-  const mapping = {}
-  
-  for (let num = 1; num <= 6; num++) {
-    const betId = 328 + (num - 1)
-    
-    mapping[`pair_${num}`] = {
-      id: betId,
-      prop: `sum_bet_amt_${betId}`,
-      label: `对${num}`,
-      name: `对子${num}`,
-      fullName: `${num}${num}对子`,
-      description: `至少有两颗骰子显示${num}`,
-      diceNumber: num,
-      odds: '10:1',
-      payout: 10,
-      probability: 7.41,
-      houseEdge: 18.52,
-      category: 'pair',
-      group: '对子区域',
-      riskLevel: 'medium',
-      color: '#e6a23c',
-      bgColor: '#fdf6ec',
-      icon: 'el-icon-copy-document',
-      order: num,
-      combinations: 16, // 包含对子和三连的情况
-      isHighOdds: true,
-      winConditions: [
-        `出现两个${num}`,
-        `出现三个${num}`
-      ]
-    }
-  }
-  
-  return mapping
-})()
-
-// 三连投注区域映射 (334-340) 对应三连1-6 + 任意三连
-export const TRIPLE_MAPPING = (() => {
-  const mapping = {}
-  
-  // 具体三连 1-6
-  for (let num = 1; num <= 6; num++) {
-    const betId = 334 + (num - 1)
-    
-    mapping[`triple_${num}`] = {
-      id: betId,
-      prop: `sum_bet_amt_${betId}`,
-      label: `三${num}`,
-      name: `三连${num}`,
-      fullName: `${num}${num}${num}三连`,
-      description: `三颗骰子都显示${num}`,
-      diceNumber: num,
-      odds: '180:1',
-      payout: 180,
-      probability: 0.46,
-      houseEdge: 16.67,
-      category: 'triple',
-      group: '三连区域',
-      riskLevel: 'extreme',
-      color: '#f56c6c',
-      bgColor: '#fef0f0',
-      icon: 'el-icon-star-on',
-      order: num,
-      combinations: 1,
-      isHighOdds: true,
-      isExtremeOdds: true,
-      winConditions: [`三颗骰子都是${num}`]
-    }
-  }
-  
-  // 任意三连
-  mapping['triple_any'] = {
-    id: 340,
-    prop: 'sum_bet_amt_340',
-    label: '任意三连',
-    name: '任意三连',
-    fullName: '任意数字三连',
-    description: '任意数字的三连组合',
-    odds: '30:1',
-    payout: 30,
-    probability: 2.78,
-    houseEdge: 13.89,
-    category: 'triple',
-    group: '三连区域',
-    riskLevel: 'high',
+  // 单骰区域 (322-327)
+  322: {
+    name: '单骰1',
+    shortName: '骰1',
+    category: 'single',
     color: '#e6a23c',
     bgColor: '#fdf6ec',
-    icon: 'el-icon-star-off',
-    order: 7,
-    combinations: 6,
-    isHighOdds: true,
-    winConditions: [
-      '三颗骰子都是1',
-      '三颗骰子都是2',
-      '三颗骰子都是3',
-      '三颗骰子都是4',
-      '三颗骰子都是5',
-      '三颗骰子都是6'
-    ]
-  }
-  
-  return mapping
-})()
+    order: 1
+  },
+  323: {
+    name: '单骰2',
+    shortName: '骰2',
+    category: 'single',
+    color: '#e6a23c',
+    bgColor: '#fdf6ec',
+    order: 2
+  },
+  324: {
+    name: '单骰3',
+    shortName: '骰3',
+    category: 'single',
+    color: '#e6a23c',
+    bgColor: '#fdf6ec',
+    order: 3
+  },
+  325: {
+    name: '单骰4',
+    shortName: '骰4',
+    category: 'single',
+    color: '#e6a23c',
+    bgColor: '#fdf6ec',
+    order: 4
+  },
+  326: {
+    name: '单骰5',
+    shortName: '骰5',
+    category: 'single',
+    color: '#e6a23c',
+    bgColor: '#fdf6ec',
+    order: 5
+  },
+  327: {
+    name: '单骰6',
+    shortName: '骰6',
+    category: 'single',
+    color: '#e6a23c',
+    bgColor: '#fdf6ec',
+    order: 6
+  },
 
-// 组合映射 - 将所有投注类型合并
-export const SICBO_MAPPING = {
-  basic: BASIC_MAPPING,
-  total: TOTAL_MAPPING,
-  single: SINGLE_MAPPING,
-  pair: PAIR_MAPPING,
-  triple: TRIPLE_MAPPING
+  // 对子区域 (328-333)
+  328: {
+    name: '对子1',
+    shortName: '对1',
+    category: 'pair',
+    color: '#f56c6c',
+    bgColor: '#fef0f0',
+    order: 1
+  },
+  329: {
+    name: '对子2',
+    shortName: '对2',
+    category: 'pair',
+    color: '#f56c6c',
+    bgColor: '#fef0f0',
+    order: 2
+  },
+  330: {
+    name: '对子3',
+    shortName: '对3',
+    category: 'pair',
+    color: '#f56c6c',
+    bgColor: '#fef0f0',
+    order: 3
+  },
+  331: {
+    name: '对子4',
+    shortName: '对4',
+    category: 'pair',
+    color: '#f56c6c',
+    bgColor: '#fef0f0',
+    order: 4
+  },
+  332: {
+    name: '对子5',
+    shortName: '对5',
+    category: 'pair',
+    color: '#f56c6c',
+    bgColor: '#fef0f0',
+    order: 5
+  },
+  333: {
+    name: '对子6',
+    shortName: '对6',
+    category: 'pair',
+    color: '#f56c6c',
+    bgColor: '#fef0f0',
+    order: 6
+  },
+
+  // 三同号区域 (334-340)
+  334: {
+    name: '三同号1',
+    shortName: '三1',
+    category: 'triple',
+    color: '#722ed1',
+    bgColor: '#f9f0ff',
+    order: 1
+  },
+  335: {
+    name: '三同号2',
+    shortName: '三2',
+    category: 'triple',
+    color: '#722ed1',
+    bgColor: '#f9f0ff',
+    order: 2
+  },
+  336: {
+    name: '三同号3',
+    shortName: '三3',
+    category: 'triple',
+    color: '#722ed1',
+    bgColor: '#f9f0ff',
+    order: 3
+  },
+  337: {
+    name: '三同号4',
+    shortName: '三4',
+    category: 'triple',
+    color: '#722ed1',
+    bgColor: '#f9f0ff',
+    order: 4
+  },
+  338: {
+    name: '三同号5',
+    shortName: '三5',
+    category: 'triple',
+    color: '#722ed1',
+    bgColor: '#f9f0ff',
+    order: 5
+  },
+  339: {
+    name: '三同号6',
+    shortName: '三6',
+    category: 'triple',
+    color: '#722ed1',
+    bgColor: '#f9f0ff',
+    order: 6
+  },
+  340: {
+    name: '任意三同号',
+    shortName: '任三',
+    category: 'triple',
+    color: '#722ed1',
+    bgColor: '#f9f0ff',
+    order: 7
+  },
+
+  // 组合区域 (341-355)
+  341: {
+    name: '组合1-2',
+    shortName: '1-2',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 1
+  },
+  342: {
+    name: '组合1-3',
+    shortName: '1-3',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 2
+  },
+  343: {
+    name: '组合1-4',
+    shortName: '1-4',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 3
+  },
+  344: {
+    name: '组合1-5',
+    shortName: '1-5',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 4
+  },
+  345: {
+    name: '组合1-6',
+    shortName: '1-6',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 5
+  },
+  346: {
+    name: '组合2-3',
+    shortName: '2-3',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 6
+  },
+  347: {
+    name: '组合2-4',
+    shortName: '2-4',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 7
+  },
+  348: {
+    name: '组合2-5',
+    shortName: '2-5',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 8
+  },
+  349: {
+    name: '组合2-6',
+    shortName: '2-6',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 9
+  },
+  350: {
+    name: '组合3-4',
+    shortName: '3-4',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 10
+  },
+  351: {
+    name: '组合3-5',
+    shortName: '3-5',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 11
+  },
+  352: {
+    name: '组合3-6',
+    shortName: '3-6',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 12
+  },
+  353: {
+    name: '组合4-5',
+    shortName: '4-5',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 13
+  },
+  354: {
+    name: '组合4-6',
+    shortName: '4-6',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 14
+  },
+  355: {
+    name: '组合5-6',
+    shortName: '5-6',
+    category: 'combo',
+    color: '#13c2c2',
+    bgColor: '#e6fffb',
+    order: 15
+  }
 }
 
-// 投注ID映射表 - 快速查找
-export const BET_ID_MAPPING = (() => {
-  const idMapping = {}
-  
-  Object.values(SICBO_MAPPING).forEach(category => {
-    Object.values(category).forEach(bet => {
-      idMapping[bet.id] = bet
-    })
-  })
-  
-  return idMapping
-})()
-
-// 属性名映射表 - 根据数据库字段名查找
-export const PROP_MAPPING = (() => {
-  const propMapping = {}
-  
-  Object.values(SICBO_MAPPING).forEach(category => {
-    Object.values(category).forEach(bet => {
-      propMapping[bet.prop] = bet
-    })
-  })
-  
-  return propMapping
-})()
-
 // 投注类别配置
-export const BETTING_CATEGORIES = {
+export const SICBO_CATEGORIES = {
   basic: {
-    name: '基础投注',
-    description: '大小单双基础投注区域',
+    name: '基础区域',
+    shortName: '基础',
+    description: '大小单双基础投注',
     color: '#409eff',
     order: 1,
-    riskLevel: 'low',
-    averageOdds: '1:1',
-    popularity: 'high'
+    items: [304, 305, 306, 307]
   },
-  
   total: {
-    name: '总和投注',
+    name: '总和区域',
+    shortName: '总和',
     description: '三颗骰子点数总和投注',
-    color: '#67c23a',
+    color: '#909399',
     order: 2,
-    riskLevel: 'varied',
-    averageOdds: '6:1-60:1',
-    popularity: 'medium'
+    items: [308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321]
   },
-  
   single: {
-    name: '单骰投注',
+    name: '单骰区域',
+    shortName: '单骰',
     description: '单个骰子点数投注',
     color: '#e6a23c',
     order: 3,
-    riskLevel: 'low',
-    averageOdds: '1:1',
-    popularity: 'medium'
+    items: [322, 323, 324, 325, 326, 327]
   },
-  
   pair: {
-    name: '对子投注',
+    name: '对子区域',
+    shortName: '对子',
     description: '两个相同点数投注',
     color: '#f56c6c',
     order: 4,
-    riskLevel: 'medium',
-    averageOdds: '10:1',
-    popularity: 'low'
+    items: [328, 329, 330, 331, 332, 333]
   },
-  
   triple: {
-    name: '三连投注',
+    name: '三同号区域',
+    shortName: '三同',
     description: '三个相同点数投注',
-    color: '#c45656',
+    color: '#722ed1',
     order: 5,
-    riskLevel: 'high',
-    averageOdds: '30:1-180:1',
-    popularity: 'low'
-  }
-}
-
-// 风险等级配置
-export const RISK_LEVELS = {
-  low: {
-    name: '低风险',
-    color: '#67c23a',
-    bgColor: '#f0f9ff',
-    description: '赔率较低，胜率较高',
-    maxPayout: 1,
-    minProbability: 40
+    items: [334, 335, 336, 337, 338, 339, 340]
   },
-  
-  medium: {
-    name: '中风险',
-    color: '#e6a23c',
-    bgColor: '#fdf6ec',
-    description: '赔率适中，胜率一般',
-    maxPayout: 15,
-    minProbability: 5
-  },
-  
-  high: {
-    name: '高风险',
-    color: '#f56c6c',
-    bgColor: '#fef0f0',
-    description: '赔率较高，胜率较低',
-    maxPayout: 50,
-    minProbability: 1
-  },
-  
-  extreme: {
-    name: '极高风险',
-    color: '#c45656',
-    bgColor: '#fdf2f2',
-    description: '赔率极高，胜率极低',
-    maxPayout: 180,
-    minProbability: 0.5
+  combo: {
+    name: '组合区域',
+    shortName: '组合',
+    description: '两个不同点数组合投注',
+    color: '#13c2c2',
+    order: 6,
+    items: [341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355]
   }
 }
 
-// 工具函数
-export const getBetById = (betId) => {
-  return BET_ID_MAPPING[betId] || null
-}
-
-export const getBetByProp = (propName) => {
-  return PROP_MAPPING[propName] || null
-}
-
-export const getBetsByCategory = (category) => {
-  return SICBO_MAPPING[category] || {}
-}
-
-export const getAllBets = () => {
-  const allBets = []
-  Object.values(SICBO_MAPPING).forEach(category => {
-    allBets.push(...Object.values(category))
-  })
-  return allBets.sort((a, b) => a.order - b.order)
-}
-
-export const getHighOddsBets = () => {
-  return getAllBets().filter(bet => bet.isHighOdds)
-}
-
-export const getBetsByRiskLevel = (riskLevel) => {
-  return getAllBets().filter(bet => bet.riskLevel === riskLevel)
-}
-
-export const calculateTotalPayout = (bets, amounts) => {
-  let totalPayout = 0
-  bets.forEach(bet => {
-    const amount = amounts[bet.prop] || 0
-    if (amount > 0) {
-      totalPayout += amount * bet.payout
-    }
-  })
-  return totalPayout
-}
-
-// 验证投注组合
-export const validateBetCombination = (betAmounts) => {
-  const warnings = []
-  const conflicts = []
-  
-  // 检查冲突投注（如大小同时投注）
-  if (betAmounts.sum_bet_amt_305 > 0 && betAmounts.sum_bet_amt_304 > 0) {
-    conflicts.push('不能同时投注大和小')
-  }
-  
-  if (betAmounts.sum_bet_amt_306 > 0 && betAmounts.sum_bet_amt_307 > 0) {
-    conflicts.push('不能同时投注单和双')
-  }
-  
-  return { warnings, conflicts }
-}
-
-// 默认导出
-export default {
-  SICBO_MAPPING,
-  BET_ID_MAPPING,
-  PROP_MAPPING,
-  BETTING_CATEGORIES,
-  RISK_LEVELS,
-  getBetById,
-  getBetByProp,
-  getBetsByCategory,
-  getAllBets,
-  getHighOddsBets,
-  getBetsByRiskLevel,
-  calculateTotalPayout,
-  validateBetCombination
+// 状态映射
+export const STATUS_MAPPING = {
+  1: { text: '待开牌', type: 'warning', color: '#e6a23c' },
+  2: { text: '已结算', type: 'success', color: '#67c23a' },
+  3: { text: '台面作废', type: 'danger', color: '#f56c6c' },
+  4: { text: '修改结果', type: 'info', color: '#909399' }
 }

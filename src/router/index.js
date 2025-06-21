@@ -3,7 +3,7 @@ import Baccarat from '@/views/baccarat/Baccarat.vue'
 import Bull from '@/views/bull/Bull.vue'
 import Dragon from '@/views/dragon/Dragon.vue'
 import Three from '@/views/three/Three.vue'
-import Sicbo from '@/views/sicbo/Sicbo.vue'
+import SicboMonitor from '@/views/sicbo/SicboMonitor.vue'  // 更改为新的监控组件
 import Qznn from '@/views/qznn/Qznn.vue'
 
 const routes = [
@@ -34,9 +34,9 @@ const routes = [
   },
   {
     path: '/sicbo',
-    name: 'Sicbo',
-    component: Sicbo
-  },
+    name: 'SicboMonitor',  // 更新组件名
+    component: SicboMonitor  // 指向新的监控组件
+  }
 ]
 
 const router = createRouter({
