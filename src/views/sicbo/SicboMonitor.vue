@@ -277,14 +277,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage } from 'element-plus'
 
 // 导入API和工具函数
-import { 
-  getSicboRecords, 
-  getSicboOverview, 
-  getSicboBetStats,
-  generateMockRecords, 
-  generateMockOverview, 
-  generateMockBetStats 
-} from './api/sicboApi.js'
+import apiService from '@/service/apiService.js'
 
 import { 
   formatMoney, 
@@ -375,29 +368,19 @@ export default {
     // 加载投注记录
     const loadRecords = async () => {
       try {
-        // 开发环境使用模拟数据
-        if (process.env.NODE_ENV === 'development') {
-          records.value = generateMockRecords(200)
-        } else {
-          const data = await getSicboRecords({ pageSize: 1000 })
-          records.value = data.list || data || []
-        }
+        const data = await apiService.getSicboRecords({ pageSize: 1000 })
+        records.value = data.list || data || []
       } catch (error) {
         console.error('加载投注记录失败:', error)
-        // 失败时使用模拟数据
-        records.value = generateMockRecords(100)
+        records.value = []
       }
     }
     
     // 加载总览数据
     const loadOverview = async () => {
       try {
-        if (process.env.NODE_ENV === 'development') {
-          overviewData.value = generateMockOverview()
-        } else {
-          const data = await getSicboOverview()
-          overviewData.value = data
-        }
+        const data = await apiService.getSicboOverview()
+        overviewData.value = data
       } catch (error) {
         console.error('加载总览数据失败:', error)
         // 从本地记录计算总览数据
@@ -409,12 +392,8 @@ export default {
     const loadBetStats = async () => {
       betStatsLoading.value = true
       try {
-        if (process.env.NODE_ENV === 'development') {
-          betStats.value = generateMockBetStats()
-        } else {
-          const data = await getSicboBetStats()
-          betStats.value = data || []
-        }
+        const data = await apiService.getSicboBetStats()
+        betStats.value = data || []
       } catch (error) {
         console.error('加载投注统计失败:', error)
         betStats.value = []
