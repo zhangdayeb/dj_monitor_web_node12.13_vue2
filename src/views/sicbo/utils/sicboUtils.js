@@ -265,9 +265,13 @@ export function groupByBetType(records) {
 /**
  * 按类别分组投注统计
  * @param {Array} betTypeStats - 投注类型统计数组
- * @returns {Object} 按类别分组的统计数据
+ * @returns {Array} 按类别分组的统计数据
  */
 export function groupByCategory(betTypeStats) {
+  if (!betTypeStats || !Array.isArray(betTypeStats)) {
+    return [] // 确保返回数组
+  }
+  
   const categories = {}
   
   betTypeStats.forEach(stat => {
@@ -291,7 +295,29 @@ export function groupByCategory(betTypeStats) {
     categories[category].totalUsers += stat.userCount
   })
   
-  return Object.values(categories)
+  // 确保返回数组，并按order排序
+  return Object.values(categories).sort((a, b) => {
+    const orderA = getCategoryOrder(a.category)
+    const orderB = getCategoryOrder(b.category)
+    return orderA - orderB
+  })
+}
+
+/**
+ * 获取类别排序
+ * @param {string} category - 类别key
+ * @returns {number} 排序号
+ */
+function getCategoryOrder(category) {
+  const orderMap = {
+    basic: 1,
+    total: 2,
+    single: 3,
+    pair: 4,
+    triple: 5,
+    combo: 6
+  }
+  return orderMap[category] || 999
 }
 
 /**

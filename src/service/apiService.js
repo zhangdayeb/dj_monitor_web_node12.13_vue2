@@ -10,24 +10,37 @@ export default {
     },
     
     /**
-     * 获取骰宝投注记录列表
-     * @param data 查询参数
+     * 获取骰宝台桌列表
      **/
-    getSicboRecords(data) {
-        return http.get(`/foreign/sicbo/records`, data)
+    getSicboTables() {
+        return http.get(`/foreign/sicbo/tables`)
+    },
+    
+    /**
+     * 获取骰宝投注记录列表
+     * @param params 查询参数 (必须包含table_id)
+     **/
+    getSicboRecords(params = {}) {
+        return http.get(`/foreign/sicbo/records`, {
+            page: 1,
+            pageSize: 50,
+            ...params
+        })
     },
     
     /**
      * 获取骰宝总览统计数据
+     * @param table_id 台桌ID
      **/
-    getSicboOverview() {
-        return http.get(`/foreign/sicbo/overview`)
+    getSicboOverview(table_id) {
+        return http.get(`/foreign/sicbo/overview`, { table_id })
     },
     
     /**
      * 获取52个投注项统计数据
+     * @param table_id 台桌ID
      **/
-    getSicboBetStats() {
-        return http.get(`/foreign/sicbo/bet-stats`)
+    getSicboBetStats(table_id) {
+        return http.get(`/foreign/sicbo/bet-stats`, { table_id })
     }
 }

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import configFile from "./config"
 
-
 axios.defaults.timeout = 5000;
 //填写域名
 axios.defaults.baseURL = `${configFile.SOURCE_URL}`  
@@ -30,7 +29,7 @@ axios.interceptors.response.use(response => {
 const http = {
     /**
      * post 请求
-    */
+     */
     post (url, data) {
         return new Promise((resolve, reject) => {
             axios.post(url, data).then(res => {
@@ -44,6 +43,23 @@ const http = {
             })
         })
     },
+    
+    /**
+     * get 请求
+     */
+    get (url, params) {
+        return new Promise((resolve, reject) => {
+            axios.get(url, { params }).then(res => {
+                if(res.code == 1) {
+                    resolve(res.data)
+                }else{
+                    reject(res)
+                }
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
 }
 
 export { http }

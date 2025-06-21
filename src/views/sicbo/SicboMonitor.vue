@@ -3,7 +3,35 @@
     <!-- 顶部总览数据 -->
     <div class="overview-section">
       <div class="section-header">
-        <h2>🎲 骰宝监控</h2>
+        <div class="header-title">
+          <h2>🎲 骰宝监控</h2>
+          <div class="table-selector">
+            <span class="selector-label">台桌:</span>
+            <el-select 
+              v-model="currentTableId" 
+              @change="changeTable"
+              size="small"
+              style="width: 180px"
+              :loading="tablesLoading"
+              placeholder="选择台桌"
+            >
+              <el-option 
+                v-for="table in tableList" 
+                :key="table.id" 
+                :label="table.name"
+                :value="table.id"
+              >
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span>{{ table.name }}</span>
+                  <div style="display: flex; gap: 8px; font-size: 12px; color: #909399;">
+                    <span>{{ table.bet_count }}笔</span>
+                    <span>¥{{ formatMoney(table.total_amount) }}</span>
+                  </div>
+                </div>
+              </el-option>
+            </el-select>
+          </div>
+        </div>
         <div class="header-actions">
           <el-button @click="refreshData" :loading="loading" type="primary" size="small">
             🔄 刷新数据
@@ -19,12 +47,24 @@
         </div>
       </div>
       
+      <!-- 当前台桌信息 -->
+      <div class="current-table-info" v-if="currentTableInfo">
+        <div class="table-info-card">
+          <span class="table-name">{{ currentTableInfo.name }}</span>
+          <span class="table-stats">
+            共{{ currentTableInfo.bet_count }}笔投注 | 总额¥{{ formatMoney(currentTableInfo.total_amount) }}
+          </span>
+          <span class="table-status active">营业中</span>
+          <span class="last-update" v-if="lastUpdateTime">最后更新: {{ lastUpdateTime }}</span>
+        </div>
+      </div>
+      
       <!-- 总览数据卡片 -->
       <div class="overview-cards">
         <div class="overview-card total-bet">
           <div class="card-icon">💰</div>
           <div class="card-content">
-            <div class="card-value">¥{{ formatMoney(overviewData.totalBetAmount) }}</div>
+            <div class="card-value">¥{{ formatMoney(overviewData.totalBetAmount || 0) }}</div>
             <div class="card-label">当局总投注</div>
           </div>
         </div>
@@ -32,7 +72,7 @@
         <div class="overview-card total-users">
           <div class="card-icon">👥</div>
           <div class="card-content">
-            <div class="card-value">{{ overviewData.totalUsers }}</div>
+            <div class="card-value">{{ overviewData.totalUsers || 0 }}</div>
             <div class="card-label">参与人数</div>
           </div>
         </div>
@@ -40,7 +80,7 @@
         <div class="overview-card bet-count">
           <div class="card-icon">📊</div>
           <div class="card-content">
-            <div class="card-value">{{ overviewData.totalBets }}</div>
+            <div class="card-value">{{ overviewData.totalBets || 0 }}</div>
             <div class="card-label">投注笔数</div>
           </div>
         </div>
@@ -48,7 +88,7 @@
         <div class="overview-card max-bet">
           <div class="card-icon">🎯</div>
           <div class="card-content">
-            <div class="card-value">¥{{ formatMoney(overviewData.maxBet) }}</div>
+            <div class="card-value">¥{{ formatMoney(overviewData.maxBet || 0) }}</div>
             <div class="card-label">最大单注</div>
           </div>
         </div>
@@ -303,8 +343,14 @@ export default {
     // ===== 响应式数据 =====
     const loading = ref(false)
     const betStatsLoading = ref(false)
+    const tablesLoading = ref(false)
     const autoRefresh = ref(false)
     const refreshTimer = ref(null)
+    
+    // 台桌相关
+    const tableList = ref([])
+    const currentTableId = ref(null)
+    const lastUpdateTime = ref('')
     
     // 搜索和分页
     const searchText = ref('')
@@ -327,6 +373,18 @@ export default {
     
     // ===== 计算属性 =====
     
+    // 当前台桌信息
+    const currentTableInfo = computed(() => {
+      if (!currentTableId.value || !tableList.value.length) return null
+      return tableList.value.find(table => table.id === currentTableId.value)
+    })
+    
+    // 当前台桌名称
+    const currentTableName = computed(() => {
+      if (!currentTableInfo.value) return '未选择台桌'
+      return currentTableInfo.value.name
+    })
+    
     // 过滤后的记录
     const filteredRecords = computed(() => {
       return filterRecords(records.value, searchText.value)
@@ -341,14 +399,63 @@ export default {
     
     // 按类别分组的投注统计
     const categoryGroups = computed(() => {
-      const betTypeStats = groupByBetType(records.value)
-      return groupByCategory(betTypeStats)
+      try {
+        const betTypeStats = groupByBetType(records.value)
+        const grouped = groupByCategory(betTypeStats)
+        return Array.isArray(grouped) ? grouped : []
+      } catch (error) {
+        console.error('分组统计数据错误:', error)
+        return []
+      }
     })
     
     // ===== 方法 =====
     
-    // 刷新所有数据
-    const refreshData = async () => {
+    // 加载台桌列表
+    const loadTables = async () => {
+      tablesLoading.value = true
+      try {
+        const data = await apiService.getSicboTables()
+        // 适配后端返回的数据格式
+        tableList.value = Array.isArray(data) ? data.map(table => ({
+          id: table.table_id,
+          name: `台桌${table.table_id}`,
+          status: 1, // 默认营业中，因为有投注数据
+          table_id: table.table_id,
+          bet_count: table.bet_count || 0,
+          total_amount: table.total_amount || '0.00'
+        })) : []
+        
+        // 如果没有选中台桌且有可用台桌，选择第一个
+        if (!currentTableId.value && tableList.value.length > 0) {
+          currentTableId.value = tableList.value[0].id
+          await loadTableData()
+        }
+      } catch (error) {
+        console.error('加载台桌列表失败:', error)
+        ElMessage.error('加载台桌列表失败: ' + error.message)
+        tableList.value = []
+      } finally {
+        tablesLoading.value = false
+      }
+    }
+    
+    // 切换台桌
+    const changeTable = async (tableId) => {
+      if (tableId && tableId !== currentTableId.value) {
+        currentTableId.value = tableId
+        await loadTableData()
+        ElMessage.success(`已切换到${currentTableName.value}`)
+      }
+    }
+    
+    // 加载当前台桌数据
+    const loadTableData = async () => {
+      if (!currentTableId.value) {
+        ElMessage.warning('请先选择台桌')
+        return
+      }
+      
       loading.value = true
       try {
         await Promise.all([
@@ -356,6 +463,7 @@ export default {
           loadOverview(),
           loadBetStats()
         ])
+        lastUpdateTime.value = new Date().toLocaleTimeString('zh-CN')
         ElMessage.success('数据刷新成功')
       } catch (error) {
         console.error('刷新数据失败:', error)
@@ -365,11 +473,25 @@ export default {
       }
     }
     
+    // 刷新所有数据 (包含台桌列表)
+    const refreshData = async () => {
+      if (!currentTableId.value) {
+        await loadTables()
+      } else {
+        await loadTableData()
+      }
+    }
+    
     // 加载投注记录
     const loadRecords = async () => {
+      if (!currentTableId.value) return
+      
       try {
-        const data = await apiService.getSicboRecords({ pageSize: 1000 })
-        records.value = data.list || data || []
+        const data = await apiService.getSicboRecords({ 
+          table_id: currentTableId.value,
+          pageSize: 1000 
+        })
+        records.value = Array.isArray(data.list) ? data.list : (Array.isArray(data) ? data : [])
       } catch (error) {
         console.error('加载投注记录失败:', error)
         records.value = []
@@ -378,9 +500,17 @@ export default {
     
     // 加载总览数据
     const loadOverview = async () => {
+      if (!currentTableId.value) return
+      
       try {
-        const data = await apiService.getSicboOverview()
-        overviewData.value = data
+        const data = await apiService.getSicboOverview(currentTableId.value)
+        // 处理可能为null的返回数据
+        overviewData.value = {
+          totalBetAmount: data?.totalBetAmount || 0,
+          totalUsers: data?.totalUsers || 0,
+          totalBets: data?.totalBets || 0,
+          maxBet: data?.maxBet || 0
+        }
       } catch (error) {
         console.error('加载总览数据失败:', error)
         // 从本地记录计算总览数据
@@ -390,10 +520,12 @@ export default {
     
     // 加载投注统计
     const loadBetStats = async () => {
+      if (!currentTableId.value) return
+      
       betStatsLoading.value = true
       try {
-        const data = await apiService.getSicboBetStats()
-        betStats.value = data || []
+        const data = await apiService.getSicboBetStats(currentTableId.value)
+        betStats.value = Array.isArray(data) ? data : []
       } catch (error) {
         console.error('加载投注统计失败:', error)
         betStats.value = []
@@ -424,7 +556,9 @@ export default {
     const startAutoRefresh = () => {
       stopAutoRefresh() // 先清除之前的定时器
       refreshTimer.value = setInterval(() => {
-        refreshData()
+        if (currentTableId.value) {
+          loadTableData()
+        }
       }, 5000)
     }
     
@@ -487,7 +621,7 @@ export default {
     
     // ===== 生命周期 =====
     onMounted(() => {
-      refreshData()
+      loadTables() // 先加载台桌列表，然后自动选择第一个台桌并加载数据
     })
     
     onBeforeUnmount(() => {
@@ -499,6 +633,7 @@ export default {
       // 数据
       loading,
       betStatsLoading,
+      tablesLoading,
       autoRefresh,
       searchText,
       currentPage,
@@ -511,9 +646,19 @@ export default {
       paginatedRecords,
       categoryGroups,
       
+      // 台桌相关
+      tableList,
+      currentTableId,
+      currentTableInfo,
+      currentTableName,
+      lastUpdateTime,
+      
       // 方法
       refreshData,
       refreshBetStats,
+      loadTables,
+      changeTable,
+      loadTableData,
       toggleAutoRefresh,
       handleSearch,
       handleSizeChange,
@@ -558,6 +703,41 @@ export default {
   color: #303133;
 }
 
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.table-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selector-label {
+  font-size: 14px;
+  color: #606266;
+  font-weight: 500;
+}
+
+.table-status {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.table-status.active {
+  background-color: #f0f9ff;
+  color: #67c23a;
+}
+
+.table-status.inactive {
+  background-color: #fef0f0;
+  color: #f56c6c;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -567,6 +747,53 @@ export default {
 .refresh-info {
   font-size: 12px;
   color: #909399;
+}
+
+/* 当前台桌信息 */
+.current-table-info {
+  margin-bottom: 20px;
+}
+
+.table-info-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.table-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.table-stats {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.table-info-card .table-status {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.table-info-card .table-status.active {
+  background-color: rgba(103, 194, 58, 0.8);
+}
+
+.last-update {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-left: auto;
 }
 
 /* 总览卡片 */
