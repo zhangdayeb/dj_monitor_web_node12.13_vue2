@@ -1,74 +1,101 @@
 <template>
-    <div class="bull">
-        <header class="bull-header">
-            牛牛
-        </header>
-        <section>
-            <el-table border :data="betList" :default-sort = "{prop: 'date', order: 'descending'}" >
-                <el-table-column prop="user_name" label="用户名" sortable align="center"></el-table-column>
-                <el-table-column prop="user_id" label="用户ID" sortable align="center"></el-table-column>
-                <el-table-column prop="pu_number" label="铺号" sortable align="center"></el-table-column>
-                <el-table-column prop="xue_number" label="靴号" sortable align="center"></el-table-column>
-                <el-table-column prop="table_name" label="台桌" sortable align="center"></el-table-column>
-                <el-table-column label="超牛闲1(下注-押金)" align="center">
-                    <template #default="scope">
-                        <div>{{scope.row.sum_bet_amt_36}}</div>
-                        <div>{{scope.row.sum_deposit_amt_36}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="超牛闲2" sortable align="center">
-                    <template #default="scope">
-                        <div>{{scope.row.sum_bet_amt_37}}</div>
-                        <div>{{scope.row.sum_deposit_amt_37}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="超牛闲3" sortable align="center" >
-                    <template #default="scope">
-                        <div>{{scope.row.sum_bet_amt_38}}</div>
-                        <div>{{scope.row.sum_deposit_amt_38}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="翻倍闲1" sortable align="center">
-                    <template #default="scope">
-                        <div>{{scope.row.sum_bet_amt_30}}</div>
-                        <div>{{scope.row.sum_deposit_amt_30}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column  label="翻倍闲2" sortable align="center">
-                    <template #default="scope">
-                        <div>{{scope.row.sum_bet_amt_32}}</div>
-                        <div>{{scope.row.sum_deposit_amt_32}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="翻倍闲3" sortable align="center">
-                    <template #default="scope">
-                        <div>{{scope.row.sum_bet_amt_34}}</div>
-                        <div>{{scope.row.sum_deposit_amt_34}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="平倍闲1" sortable align="center">
-                    <template #default="scope">
-                        <div>{{scope.row.sum_bet_amt_31}}</div>
-                        <div>{{scope.row.sum_deposit_amt_31}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="平倍闲2" sortable align="center">
-                    <template #default="scope">
-                        <div>{{scope.row.sum_bet_amt_33}}</div>
-                        <div>{{scope.row.sum_deposit_amt_33}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="平倍闲3" sortable align="center">
-                    <template #default="scope">
-                        <div>{{scope.row.sum_bet_amt_35}}</div>
-                        <div>{{scope.row.sum_deposit_amt_35}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="count" label="总计" sortable align="center"></el-table-column>
-            </el-table>
-        </section>
-    </div>
+  <div class="sicbo-monitor">
+    <header class="sicbo-header">
+      <h1>骰宝监控中心</h1>
+      <div class="header-info">
+        <span class="refresh-time">最后刷新: {{ lastRefreshTime }}</span>
+        <span class="online-count">在线: {{ onlineCount }}人</span>
+      </div>
+    </header>
+    
+    <el-tabs v-model="activeTab" class="sicbo-tabs" @tab-change="handleTabChange">
+      <el-tab-pane label="总体监控" name="overview">
+        <overview-table 
+          :refresh-interval="refreshInterval"
+          @data-updated="handleDataUpdated"
+        />
+      </el-tab-pane>
+      
+      <el-tab-pane label="个人监控" name="personal">
+        <personal-search />
+      </el-tab-pane>
+      
+      <el-tab-pane label="统计分析" name="statistics">
+        <stats-overview />
+      </el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 
-<script src="./Sicbo.js" ></script>
-<style scoped src="./Sicbo.less" lang='less'></style>
+<script>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import OverviewTable from './components/overview/OverviewTable.vue'
+import PersonalSearch from './components/personal/PersonalSearch.vue'
+import StatsOverview from './components/statistics/StatsOverview.vue'
+
+export default {
+  name: 'SicboMonitor',
+  components: {
+    OverviewTable,
+    PersonalSearch,
+    StatsOverview
+  },
+  setup() {
+    const activeTab = ref('overview')
+    const refreshInterval = ref(3000) // 3秒刷新间隔
+    const lastRefreshTime = ref('')
+    const onlineCount = ref(0)
+    const timer = ref(null)
+
+    // 处理Tab切换
+    const handleTabChange = (tabName) => {
+      console.log('切换到:', tabName)
+      // 可以在这里添加Tab切换的逻辑
+    }
+
+    // 处理数据更新
+    const handleDataUpdated = (data) => {
+      lastRefreshTime.value = new Date().toLocaleTimeString()
+      onlineCount.value = data.onlineCount || 0
+    }
+
+    // 更新时间显示
+    const updateTime = () => {
+      if (!lastRefreshTime.value) {
+        lastRefreshTime.value = new Date().toLocaleTimeString()
+      }
+    }
+
+    // 定时更新时间显示
+    const startTimeUpdate = () => {
+      timer.value = setInterval(() => {
+        if (lastRefreshTime.value) {
+          // 可以添加相对时间显示逻辑
+        }
+      }, 1000)
+    }
+
+    onMounted(() => {
+      updateTime()
+      startTimeUpdate()
+    })
+
+    onBeforeUnmount(() => {
+      if (timer.value) {
+        clearInterval(timer.value)
+      }
+    })
+
+    return {
+      activeTab,
+      refreshInterval,
+      lastRefreshTime,
+      onlineCount,
+      handleTabChange,
+      handleDataUpdated
+    }
+  }
+}
+</script>
+
+<style scoped src="./styles/sicbo-common.less" lang="less"></style>
