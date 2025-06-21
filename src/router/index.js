@@ -1,52 +1,94 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Baccarat from '@/views/baccarat/BaccaratMonitor.vue'
-import Bull from '@/views/bull/Bull.vue'
+import NavigationIndex from '@/views/index.vue'  // 导航首页
+import BaccaratMonitor from '@/views/baccarat/BaccaratMonitor.vue'
+import BullMonitor from '@/views/bull/BullMonitor.vue'
 import DragonMonitor from '@/views/dragon/DragonMonitor.vue'
-import Three from '@/views/three/Three.vue'
-import SicboMonitor from '@/views/sicbo/SicboMonitor.vue'  // 更改为新的监控组件
-import Qznn from '@/views/qznn/Qznn.vue'
+import ThreeMonitor from '@/views/three/ThreeMonitor.vue'
+import SicboMonitor from '@/views/sicbo/SicboMonitor.vue'
+import QznnMonitor from '@/views/qznn/QznnMonitor.vue'
 
 const routes = [
+  // 导航首页
+  {
+    path: '/',
+    name: 'NavigationIndex',
+    component: NavigationIndex,
+    meta: {
+      title: '游戏监控系统'
+    }
+  },
+  // 百家乐监控
   {
     path: '/bjl',
-    name: 'Baccarat',
-    component: Baccarat
+    name: 'BaccaratMonitor',
+    component: BaccaratMonitor,
+    meta: {
+      title: '百家乐监控'
+    }
   },
+  // 牛牛监控
   {
     path: '/nn',
-    name: 'Bull',
-    component: Bull
+    name: 'BullMonitor',
+    component: BullMonitor,
+    meta: {
+      title: '牛牛监控'
+    }
   },
+  // 抢庄牛牛监控
   {
     path: '/qznn',
-    name: 'Qznn',
-    component: Qznn
+    name: 'QznnMonitor',
+    component: QznnMonitor,
+    meta: {
+      title: '抢庄牛牛监控'
+    }
   },
+  // 龙虎监控
   {
     path: '/lh',
     name: 'DragonMonitor',
-    component: DragonMonitor
+    component: DragonMonitor,
+    meta: {
+      title: '龙虎监控'
+    }
   },
+  // 三公监控
   {
     path: '/sg',
-    name: 'Three',
-    component: Three
+    name: 'ThreeMonitor',
+    component: ThreeMonitor,
+    meta: {
+      title: '三公监控'
+    }
   },
+  // 骰宝监控
   {
     path: '/sicbo',
-    name: 'SicboMonitor',  // 更新组件名
-    component: SicboMonitor  // 指向新的监控组件
+    name: 'SicboMonitor',
+    component: SicboMonitor,
+    meta: {
+      title: '骰宝监控'
+    }
   },
-  // 可选：添加默认重定向
+  // 404页面重定向到首页
   {
-    path: '/',
-    redirect: '/sicbo'
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+// 路由守卫 - 设置页面标题
+router.beforeEach((to, from, next) => {
+  if (to.meta.title) {
+    document.title = `${to.meta.title} - 投注监控系统`
+  }
+  next()
 })
 
 export default router

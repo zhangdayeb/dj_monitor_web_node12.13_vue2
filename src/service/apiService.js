@@ -81,46 +81,153 @@ export default {
      **/
     getBaccaratBetStats(table_id) {
         return http.get(`/foreign/baccarat/bet-stats`, { table_id })
+    },
+
+    // ==================== 龙虎相关接口 ====================
+    
+    /**
+     * 获取龙虎台桌列表
+     **/
+    getDragonTables() {
+        return http.get(`/foreign/lh/tables`)
+    },
+    
+    /**
+     * 获取龙虎投注记录列表
+     * @param params 查询参数 (必须包含table_id)
+     **/
+    getDragonRecords(params = {}) {
+        return http.get(`/foreign/lh/records`, {
+            page: 1,
+            pageSize: 50,
+            ...params
+        })
+    },
+    
+    /**
+     * 获取龙虎总览统计数据
+     * @param table_id 台桌ID
+     **/
+    getDragonOverview(table_id) {
+        return http.get(`/foreign/lh/overview`, { table_id })
+    },
+    
+    /**
+     * 获取3个投注项统计数据
+     * @param table_id 台桌ID
+     **/
+    getDragonBetStats(table_id) {
+        return http.get(`/foreign/lh/bet-stats`, { table_id })
+    },
+
+    // ==================== 牛牛相关接口 ====================
+    
+    /**
+     * 获取牛牛台桌列表
+     **/
+    getBullTables() {
+        return http.get(`/foreign/nn/tables`)
+    },
+    
+    /**
+     * 获取牛牛投注记录列表
+     * @param params 查询参数 (必须包含table_id)
+     **/
+    getBullRecords(params = {}) {
+        return http.get(`/foreign/nn/records`, {
+            page: 1,
+            pageSize: 50,
+            ...params
+        })
+    },
+    
+    /**
+     * 获取牛牛总览统计数据
+     * @param table_id 台桌ID
+     **/
+    getBullOverview(table_id) {
+        return http.get(`/foreign/nn/overview`, { table_id })
+    },
+    
+    /**
+     * 获取牛牛投注项统计数据
+     * @param table_id 台桌ID
+     **/
+    getBullBetStats(table_id) {
+        return http.get(`/foreign/nn/bet-stats`, { table_id })
+    },
+
+    // ==================== 三公相关接口 ====================
+    
+    /**
+     * 获取三公台桌列表
+     **/
+    getThreeTables() {
+        return http.get(`/foreign/sg/tables`)
+    },
+    
+    /**
+     * 获取三公投注记录列表
+     * @param params 查询参数 (必须包含table_id)
+     **/
+    getThreeRecords(params = {}) {
+        return http.get(`/foreign/sg/records`, {
+            page: 1,
+            pageSize: 50,
+            ...params
+        })
+    },
+    
+    /**
+     * 获取三公总览统计数据
+     * @param table_id 台桌ID
+     **/
+    getThreeOverview(table_id) {
+        return http.get(`/foreign/sg/overview`, { table_id })
+    },
+    
+    /**
+     * 获取9个投注项统计数据
+     * @param table_id 台桌ID
+     **/
+    getThreeBetStats(table_id) {
+        return http.get(`/foreign/sg/bet-stats`, { table_id })
+    },
+
+    // ==================== 抢庄牛牛相关接口 ====================
+    
+    /**
+     * 获取抢庄牛牛台桌列表
+     **/
+    getQznnTables() {
+        return http.get(`/foreign/qznn/tables`)
+    },
+    
+    /**
+     * 获取抢庄牛牛投注记录列表
+     * @param params 查询参数 (必须包含table_id)
+     **/
+    getQznnRecords(params = {}) {
+        return http.get(`/foreign/qznn/records`, {
+            page: 1,
+            pageSize: 50,
+            ...params
+        })
+    },
+    
+    /**
+     * 获取抢庄牛牛总览统计数据
+     * @param table_id 台桌ID
+     **/
+    getQznnOverview(table_id) {
+        return http.get(`/foreign/qznn/overview`, { table_id })
+    },
+    
+    /**
+     * 获取抢庄牛牛投注项统计数据
+     * @param table_id 台桌ID
+     **/
+    getQznnBetStats(table_id) {
+        return http.get(`/foreign/qznn/bet-stats`, { table_id })
     }
-
-    // 在 apiService.js 中添加
-// ==================== 龙虎相关接口 ====================
-
-/**
- * 获取龙虎台桌列表
- **/
-getDragonTables() {
-    return http.get(`/foreign/lh/tables`)
-},
-
-/**
- * 获取龙虎投注记录列表
- * @param params 查询参数 (必须包含table_id)
- **/
-getDragonRecords(params = {}) {
-    return http.get(`/foreign/lh/records`, {
-        page: 1,
-        pageSize: 50,
-        ...params
-    })
-},
-
-/**
- * 获取龙虎总览统计数据
- * @param table_id 台桌ID
- **/
-getDragonOverview(table_id) {
-    return http.get(`/foreign/lh/overview`, { table_id })
-},
-
-/**
- * 获取3个投注项统计数据
- * @param table_id 台桌ID
- **/
-getDragonBetStats(table_id) {
-    return http.get(`/foreign/lh/bet-stats`, { table_id })
-}
-
-
-
 }

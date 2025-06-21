@@ -1,10 +1,10 @@
 <template>
-  <div class="three-monitor">
+  <div class="bull-monitor">
     <!-- 顶部总览数据 -->
     <div class="overview-section">
       <div class="section-header">
         <div class="header-title">
-          <h2>🀄 三公监控</h2>
+          <h2>🐂 牛牛监控</h2>
           <div class="table-selector">
             <span class="selector-label">台桌:</span>
             <el-select 
@@ -103,8 +103,8 @@
           <h3>📊 投注统计分析</h3>
           <div class="trend-advice">
             <span class="advice-label">投注趋势:</span>
-            <span class="advice-text" :class="`trend-${threeAdvice.trend}`">
-              {{ threeAdvice.suggestion }}
+            <span class="advice-text" :class="`trend-${bullAdvice.trend}`">
+              {{ bullAdvice.suggestion }}
             </span>
           </div>
         </div>
@@ -324,7 +324,8 @@
 <script>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage } from 'element-plus'
-和工具函数
+
+// 导入API和工具函数
 import apiService from '@/service/apiService.js'
 
 import { 
@@ -343,11 +344,11 @@ import {
   groupByCategory,
   filterRecords,
   debounce,
-  getThreeAdvice
-} from './utils/threeUtils.js'
+  getBullAdvice
+} from './utils/bullUtils.js'
 
 export default {
-  name: 'ThreeMonitor',
+  name: 'BullMonitor',
   setup() {
     // ===== 响应式数据 =====
     const loading = ref(false)
@@ -418,10 +419,10 @@ export default {
       }
     })
     
-    // 三公投注建议
-    const threeAdvice = computed(() => {
+    // 牛牛投注建议
+    const bullAdvice = computed(() => {
       const betTypeStats = groupByBetType(records.value)
-      return getThreeAdvice(betTypeStats)
+      return getBullAdvice(betTypeStats)
     })
     
     // ===== 方法 =====
@@ -430,7 +431,7 @@ export default {
     const loadTables = async () => {
       tablesLoading.value = true
       try {
-        const data = await apiService.getThreeTables()
+        const data = await apiService.getBullTables()
         // 适配后端返回的数据格式
         tableList.value = Array.isArray(data) ? 
           data : (data?.list ? data.list : (Array.isArray(data) ? data : []))
@@ -482,7 +483,7 @@ export default {
       
       loading.value = true
       try {
-        const data = await apiService.getThreeRecords({ table_id: currentTableId.value })
+        const data = await apiService.getBullRecords({ table_id: currentTableId.value })
         // 适配后端返回的数据格式
         records.value = data?.list ? data.list : (Array.isArray(data) ? data : [])
       } catch (error) {
@@ -498,7 +499,7 @@ export default {
       if (!currentTableId.value) return
       
       try {
-        const data = await apiService.getThreeOverview(currentTableId.value)
+        const data = await apiService.getBullOverview(currentTableId.value)
         // 处理可能为null的返回数据
         overviewData.value = {
           totalBetAmount: data?.totalBetAmount || 0,
@@ -519,7 +520,7 @@ export default {
       
       betStatsLoading.value = true
       try {
-        const data = await apiService.getThreeBetStats(currentTableId.value)
+        const data = await apiService.getBullBetStats(currentTableId.value)
         betStats.value = Array.isArray(data) ? data : []
       } catch (error) {
         console.error('加载投注统计失败:', error)
@@ -646,7 +647,7 @@ export default {
       filteredRecords,
       paginatedRecords,
       categoryGroups,
-      threeAdvice,
+      bullAdvice,
       
       // 台桌相关
       tableList,
@@ -686,7 +687,7 @@ export default {
 </script>
 
 <style scoped>
-.three-monitor {
+.bull-monitor {
   padding: 20px;
   background-color: #f5f7fa;
   min-height: 100vh;
@@ -763,16 +764,16 @@ export default {
   font-weight: bold;
 }
 
-.advice-text.trend-double {
-  color: #f56c6c;
-}
-
-.advice-text.trend-normal {
+.advice-text.trend-banker {
   color: #409eff;
 }
 
-.advice-text.trend-super {
-  color: #722ed1;
+.advice-text.trend-player {
+  color: #f56c6c;
+}
+
+.advice-text.trend-special {
+  color: #fa8c16;
 }
 
 .advice-text.trend-neutral {
@@ -1040,7 +1041,7 @@ export default {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .three-monitor {
+  .bull-monitor {
     padding: 10px;
   }
   
