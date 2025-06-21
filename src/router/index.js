@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Baccarat from '@/views/baccarat/Baccarat.vue'
+import Baccarat from '@/views/baccarat/BaccaratMonitor.vue'
 import Bull from '@/views/bull/Bull.vue'
 import Dragon from '@/views/dragon/Dragon.vue'
 import Three from '@/views/three/Three.vue'
@@ -36,6 +36,11 @@ const routes = [
     path: '/sicbo',
     name: 'SicboMonitor',  // 更新组件名
     component: SicboMonitor  // 指向新的监控组件
+  },
+  // 可选：添加默认重定向
+  {
+    path: '/',
+    redirect: '/sicbo'
   }
 ]
 
