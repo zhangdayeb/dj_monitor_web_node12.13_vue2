@@ -3,6 +3,9 @@ import Baccarat from '@/views/baccarat/Baccarat.vue'
 import Bull from '@/views/bull/Bull.vue'
 import Dragon from '@/views/dragon/Dragon.vue'
 import Three from '@/views/three/Three.vue'
+import Sicbo from '@/views/sicbo/Sicbo.vue'
+import Qznn from '@/views/qznn/Qznn.vue'
+
 const routes = [
   {
     path: '/bjl',
@@ -15,6 +18,11 @@ const routes = [
     component: Bull
   },
   {
+    path: '/qznn',
+    name: 'Qznn',
+    component: Qznn
+  },
+  {
     path: '/lh',
     name: 'Dragon',
     component: Dragon
@@ -24,14 +32,11 @@ const routes = [
     name: 'Three',
     component: Three
   },
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // }
+  {
+    path: '/sicbo',
+    name: 'Sicbo',
+    component: Sicbo
+  },
 ]
 
 const router = createRouter({
