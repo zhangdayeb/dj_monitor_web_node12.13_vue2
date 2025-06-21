@@ -10,11 +10,6 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 
 axios.interceptors.request.use(
     config => {
-    //     let token = sessionStorage.getItem('token') || '';
-    //     if(token){
-    // //    config.headers.Authorization = 'x-csrf-token';
-    //         config.headers['x-csrf-token'] = token
-    //     }
         return config;
     },
     error => {
@@ -33,21 +28,6 @@ axios.interceptors.response.use(response => {
 })
 
 const http = {
-    // async get (url, data) {
-    //     try {
-    //         let res = await axios.get(url, data)
-    //         res = res.data
-    //         return new Promise((resolve,reject) => {
-    //             if (res.code === 0) {
-    //                 resolve(res)
-    //             } else {
-    //                 reject(res)
-    //             }
-    //         })
-    //     } catch (err) {
-    //         // console.log(err)
-    //     }
-    // },
     /**
      * post 请求
     */
