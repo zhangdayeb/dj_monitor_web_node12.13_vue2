@@ -1,8 +1,8 @@
-import bjlService from '@/service/bjlService'
+import apiService from '@/service/apiService'
 
 
 export default {
-    name: 'bull',
+    name: 'qznn', // 修正组件名称
     components: {
 
     },
@@ -22,7 +22,7 @@ export default {
          * 获取对外列表 
         */
         getForeignList() {
-            bjlService.getForeignList({game_type: '6'}).then(res => {
+            apiService.getForeignList({game_type: '5'}).then(res => { // 修正为抢庄牛牛的游戏类型
                 this.betList = res
             }).catch(err => {
                 console.log("err:",err)

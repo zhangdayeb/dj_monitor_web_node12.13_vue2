@@ -1,4 +1,4 @@
-import bjlService from '@/service/bjlService'
+import apiService from '@/service/apiService'
 
 
 export default {
@@ -22,7 +22,7 @@ export default {
          * 获取对外列表 
         */
         getForeignList() {
-            bjlService.getForeignList({game_type: '2'}).then(res => {
+            apiService.getForeignList({game_type: '2'}).then(res => {
                 this.betList = res
             }).catch(err => {
                 console.log("err:",err)

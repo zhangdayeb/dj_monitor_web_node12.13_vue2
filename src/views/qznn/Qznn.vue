@@ -1,7 +1,7 @@
 <template>
     <div class="bull">
         <header class="bull-header">
-            牛牛
+            抢庄牛牛
         </header>
         <section>
             <el-table border :data="betList" :default-sort = "{prop: 'date', order: 'descending'}" >
