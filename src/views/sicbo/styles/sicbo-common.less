@@ -156,8 +156,7 @@
 }
 
 // 风险等级样式
-.sicbo-risk-style(@level) {
-  @color: ~"@{sicbo-risk-@{level}}";
+.sicbo-risk-style(@color) {
   color: @color;
   border-color: fade(@color, 30%);
   background-color: fade(@color, 10%);
@@ -347,19 +346,19 @@
   font-weight: 500;
   
   &.sicbo-risk-low {
-    .sicbo-risk-style(low);
+    .sicbo-risk-style(@sicbo-risk-low);
   }
   
   &.sicbo-risk-medium {
-    .sicbo-risk-style(medium);
+    .sicbo-risk-style(@sicbo-risk-medium);
   }
   
   &.sicbo-risk-high {
-    .sicbo-risk-style(high);
+    .sicbo-risk-style(@sicbo-risk-high);
   }
   
   &.sicbo-risk-extreme {
-    .sicbo-risk-style(extreme);
+    .sicbo-risk-style(@sicbo-risk-extreme);
     animation: sicbo-pulse 2s infinite;
   }
 }
