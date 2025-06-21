@@ -82,4 +82,45 @@ export default {
     getBaccaratBetStats(table_id) {
         return http.get(`/foreign/baccarat/bet-stats`, { table_id })
     }
+
+    // 在 apiService.js 中添加
+// ==================== 龙虎相关接口 ====================
+
+/**
+ * 获取龙虎台桌列表
+ **/
+getDragonTables() {
+    return http.get(`/foreign/lh/tables`)
+},
+
+/**
+ * 获取龙虎投注记录列表
+ * @param params 查询参数 (必须包含table_id)
+ **/
+getDragonRecords(params = {}) {
+    return http.get(`/foreign/lh/records`, {
+        page: 1,
+        pageSize: 50,
+        ...params
+    })
+},
+
+/**
+ * 获取龙虎总览统计数据
+ * @param table_id 台桌ID
+ **/
+getDragonOverview(table_id) {
+    return http.get(`/foreign/lh/overview`, { table_id })
+},
+
+/**
+ * 获取3个投注项统计数据
+ * @param table_id 台桌ID
+ **/
+getDragonBetStats(table_id) {
+    return http.get(`/foreign/lh/bet-stats`, { table_id })
+}
+
+
+
 }

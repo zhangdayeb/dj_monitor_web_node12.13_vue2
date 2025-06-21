@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Baccarat from '@/views/baccarat/BaccaratMonitor.vue'
 import Bull from '@/views/bull/Bull.vue'
-import Dragon from '@/views/dragon/Dragon.vue'
+import DragonMonitor from '@/views/dragon/DragonMonitor.vue'
 import Three from '@/views/three/Three.vue'
 import SicboMonitor from '@/views/sicbo/SicboMonitor.vue'  // 更改为新的监控组件
 import Qznn from '@/views/qznn/Qznn.vue'
@@ -24,8 +24,8 @@ const routes = [
   },
   {
     path: '/lh',
-    name: 'Dragon',
-    component: Dragon
+    name: 'DragonMonitor',
+    component: DragonMonitor
   },
   {
     path: '/sg',
